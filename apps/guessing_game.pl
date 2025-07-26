@@ -44,14 +44,14 @@ character('Frodo Baggins', ficticio, 'Terra Média', ['protagonista', 'aventurei
 character('Legolas', ficticio, 'Terra Média', ['arqueiro', 'guerreiro', 'preciso', 'elfo', 'leal', 'bonito', 'atlético', 'personagem de filme', 'personagem de livro', 'famoso']).
 character('Donatello', ficticio, 'Esgoto', ['tartaruga', 'mutante', 'lutador', 'inteligente', 'cientista', 'ninja', 'herói', 'personagem animado', 'leal', 'inventor']).
 character('Michelangelo', ficticio, 'Esgoto', ['tartaruga', 'mutante', 'herói', 'engraçado', 'alegre', 'ninja', 'jovem', 'personagem animado', 'leal', 'comilão']).
-character('Raven', ficticio, 'Terra', ['jovem', 'magia', 'personagem de série', 'reservado', 'protetor', 'introvertido', 'mulher', 'poderoso', 'herói']).
+character('Raven', ficticio, 'Terra', ['jovem', 'mago', 'personagem de série', 'reservado', 'protetor', 'introvertido', 'mulher', 'poderoso', 'herói']).
 character('Eric Cartman', ficticio, 'South Park', ['egoísta', 'personagem animado', 'gordo', 'criança', 'irreverente', 'americano', 'famoso', 'sarcastico', 'provocador']).
 character('Wolverine', ficticio, 'Canadá', ['mutante', 'guerreiro', 'homem', 'imortal', 'herói', 'personagem de quadrinho', 'solitário', 'instintivo', 'famoso']).
 character('Buzz Lightyear', ficticio, 'Galáxia Infinita', ['herói', 'explorador', 'corajoso', 'personagem animado', 'personagem de filme', 'famoso', 'homem', 'futurista', 'astro espacial', 'confiante']).
 character('Woody', ficticio, 'Velho Oeste', ['líder', 'brinquedo', 'personagem animado', 'leal', 'cowboy', 'personagem de filme', 'honesto', 'homem', 'protetor', 'famoso']).
 character('Po', ficticio, 'China', ['panda', 'guerreiro', 'desajeitado', 'leal', 'personagem animado', 'personagem de filme', 'herói', 'engraçado', 'determinado']).
 character('Zé Pequeno', ficticio, 'Cidade de Deus', ['vilão', 'violento', 'personagem de filme', 'brasileiro', 'jovem', 'negro', 'temido', 'protagonista', 'histórico']).
-character('Marinette Dupain-Cheng', ficticio, 'França', ['estudante', 'heroína', 'jovem', 'personagem de série', 'personagem animado', 'corajoso', 'mulher', 'francesa', 'poder especial', 'mascarado']).
+character('Marinette Dupain-Cheng', ficticio, 'França', ['estudante', 'herói', 'jovem', 'personagem de série', 'personagem animado', 'corajoso', 'mulher', 'francesa', 'poder especial', 'mascarado']).
 character('Professor Utonium', ficticio, 'Townsville', ['cientista', 'pai', 'homem', 'personagem animado', 'inventor', 'educador', 'gentil', 'inteligente', 'protetor']).
 character('Lisa Simpson', ficticio, 'Springfield', ['inteligente', 'personagem de série', 'estudante', 'criança', 'mulher', 'ativista', 'personagem animado', 'famoso', 'nerd']).
 character('Patrick Estrela', ficticio, 'Fenda do Biquíni', ['leal', 'lento', 'engraçado', 'rosado', 'personagem animado', 'preguiçoso', 'marinho', 'masculino']).
@@ -67,6 +67,7 @@ character('Tyrion Lannister', ficticio, 'Westeros', ['pequeno', 'estrategista', 
 character('Walter White', ficticio, 'Estados Unidos', ['químico', 'professor', 'polêmico', 'pai', 'personagem de série', 'homem', 'criminoso', 'careca']).
 character('Hermione Granger', ficticio, 'Inglaterra', ['bruxo', 'inteligente', 'jovem', 'estudante', 'mulher', 'leal', 'personagem de livro', 'personagem de filme', 'europeu']).
 character('Professor X', ficticio, 'Estados Unidos', ['mutante', 'telepata', 'líder', 'cadeirante', 'gênio', 'personagem de quadrinho', 'homem', 'mentor']).
+character('Gandalf', ficticio, 'Terra Média', ['mago', 'velho', 'barbudo', 'protetor', 'líder', 'estrategista', 'herói', 'sábio']).
 
 % Personagens reais.
 character('Albert Einstein', real, 'Alemanha', ['cientista', 'físico', 'gênio', 'prêmio Nobel', 'homem', 'europeu', 'professor', 'pensador', 'conhecido mundialmente']).
@@ -128,7 +129,7 @@ get_attributes(Characters, Attributes) :-
 has_attribute(Attr, character(_, _, _, Attrs)) :- 
     member(Attr, Attrs).
 
-% Encontra o atributo mais discriminativo (que divide os personagens de forma mais equilibrada)
+% Encontra o atributo mais discriminativo (que divide os personagens de forma mais equilibrada).
 best_discriminatory_attribute(Chars, Asked, BestAttr) :-
     get_attributes(Chars, AllAttrs),
     subtract(AllAttrs, Asked, Unasked),
@@ -184,9 +185,9 @@ handle_answer(_) :-
 
 % Estado do jogo: game(Attempts, FilteredCharacters, AskedAttributes)
 % Onde:
-% - Attempts: tentativas restantes
-% - FilteredCharacters: personagens ainda possíveis
-% - AskedAttributes: atributos já perguntados
+% - Attempts: tentativas restantes.
+% - FilteredCharacters: personagens ainda possíveis.
+% - AskedAttributes: atributos já perguntados.
 
 % Inicia o jogo com estado inicial.
 game(Attempts) :-
@@ -253,16 +254,22 @@ process_type_answer(_, Type) :-
     ask_type(Type).
 
 ask_question(Attr, Answer) :-
-    % Casos específicos para atributos problemáticos
-    (   Attr = 'usa óculos'       -> Question = 'Seu personagem usa óculos?'
-    ;   Attr = 'super força'      -> Question = 'Seu personagem tem super força?'
-    ;   Attr = 'copa do mundo'    -> Question = 'Seu personagem tem copa do mundo?'
-    ;   Attr = 'prêmio Nobel'     -> Question = 'Seu personagem tem prêmio Nobel?'
-    ;   Attr = 'protagonista'     -> Question = 'Seu personagem é o protagonista?'
-    ;   Attr = 'fuma cachimbo'    -> Question = 'Seu personagem fuma cachimbo?'
-    ;   Attr = 'tartaruga'      -> Question = 'Seu personagem é uma tartaruga?'
+    % Casos específicos para atributos problemáticos.
+    (   Attr = 'usa óculos'       	  -> Question = 'Seu personagem usa óculos?'
+    ;   Attr = 'usa capa'      	  	  -> Question = 'Seu personagem usa capa?'
+    ;   Attr = 'super força'      	  -> Question = 'Seu personagem tem super força?'
+    ;   Attr = 'copa do mundo'    	  -> Question = 'Seu personagem tem copa do mundo?'
+    ;   Attr = 'prêmio Nobel'     	  -> Question = 'Seu personagem tem prêmio Nobel?'
+    ;   Attr = 'fuma cachimbo'    	  -> Question = 'Seu personagem fuma cachimbo?'
+    ;   Attr = 'herói'      	  	  -> Question = 'Seu personagem é um herói?'
+    ;   Attr = 'cão'      	  	      -> Question = 'Seu personagem é um cão?'
+    ;   Attr = 'animal'      	  	  -> Question = 'Seu personagem é um animal?'
+    ;   Attr = 'personagem animado'   -> Question = 'Seu personagem é de desenho animado?'
+    ;   Attr = 'personagem de filme'  -> Question = 'Seu personagem é de filme?'
+    ;   Attr = 'personagem de livro'  -> Question = 'Seu personagem é de livro?'
+    ;   Attr = 'personagem de série'  -> Question = 'Seu personagem é de uma série?'
 
-    % Regra padrão para os demais casos
+    % Regra padrão para os demais casos.
     ;   format(atom(Question), 'Seu personagem é ~w?', [Attr])
     ),
     write(Question), write('(sim./nao.) '),
@@ -270,12 +277,10 @@ ask_question(Attr, Answer) :-
 
 % Predicado para processar a resposta do usuário sobre um atributo.
 process_attribute_answer(sim, Attr, Chars, Asked, NewChars, NewAsked) :-
-%    write('Ok, seu personagem '), write(Attr), write('.'), nl, nl,
     include(has_attribute(Attr), Chars, NewChars),
     NewAsked = [Attr|Asked].
 
 process_attribute_answer(nao, Attr, Chars, Asked, NewChars, NewAsked) :-
-%    write('Ok, seu personagem não '), write(Attr), write('.'), nl, nl,
     exclude(has_attribute(Attr), Chars, NewChars),
     NewAsked = [Attr|Asked].
 
