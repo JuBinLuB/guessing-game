@@ -1,0 +1,27 @@
+# -------------------------------------------------------
+# .gitignore for a Prolog project using SWISH (online)
+# No compilation or local environment files expected
+# -------------------------------------------------------
+
+# Editor backup and temporary files
+*~
+*.bak
+*.tmp
+*.swp
+*.swo
+
+# OS-generated files (macOS and Windows)
+.DS_Store
+Thumbs.db
+
+# Optional: log files if manually created
+*.log
+
+# Optional: LaTeX or document build artifacts (if using LaTeX in docs/)
+docs/*.aux
+docs/*.log
+docs/*.out
+docs/*.pdf
+docs/*.toc
+docs/*.lof
+docs/*.lot
