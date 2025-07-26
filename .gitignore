@@ -18,10 +18,4 @@ Thumbs.db
 *.log
 
 # Optional: LaTeX or document build artifacts (if using LaTeX in docs/)
-docs/*.aux
-docs/*.log
-docs/*.out
-docs/*.pdf
-docs/*.toc
-docs/*.lof
-docs/*.lot
+docs/
