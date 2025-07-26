@@ -24,7 +24,7 @@ character('Bruce Wayne', ficticio, 'Estados Unidos', ['super herói', 'rico', 'd
 character('Tony Stark', ficticio, 'Estados Unidos', ['engenheiro', 'rico', 'gênio', 'usa armadura', 'sarcastico', 'inventor']).
 character('Diana Prince', ficticio, 'Temiscira', ['super herói', 'guerreira', 'princesa', 'super força', 'imortal', 'mulher']).
 character('Homer Simpson', ficticio, 'Springfield', ['personagem animado', 'pai de família', 'comediante', 'preguiçoso', 'americano', 'trabalhador']).
-character('Elsa', ficticio, 'Arendelle', ['princesa', 'protagonista', 'personagem animado', 'poder especial', 'canta', 'introvertida', 'loira']).
+character('Elsa', ficticio, 'Arendelle', ['princesa', 'protagonista', 'personagem animado', 'super poder', 'canta', 'introvertida', 'loira']).
 character('Goku', ficticio, 'Terra', ['lutador', 'protagonista', 'super força', 'alienígena', 'faminto', 'determinado']).
 character('Mario', ficticio, 'Reino dos Cogumelos', ['personagem de jogo', 'encanador', 'usa boné', 'herói', 'bigode', 'italiano']).
 
@@ -35,7 +35,7 @@ character('Isaac Newton', real, 'Inglaterra', ['cientista', 'físico', 'matemát
 character('Leonardo da Vinci', real, 'Itália', ['artista', 'inventor', 'pintor', 'renascentista', 'gênio', 'multitalentoso']).
 character('Frida Kahlo', real, 'México', ['artista', 'pintora', 'expressiva', 'mulher', 'sofrimento', 'reconhecida mundialmente']).
 character('Malala Yousafzai', real, 'Paquistão', ['ativista', 'educação', 'jovem', 'prêmio Nobel', 'corajosa', 'feminista']).
-character('Pelé', real, 'Brasil', ['atleta', 'jogador de futebol', 'ídolo brasileiro', 'tricampeão', 'negro', 'internacional']).
+character('Pelé', real, 'Brasil', ['atleta', 'jogador de futebol', 'brasileiro', 'copa do mundo', 'negro']).
 character('Usain Bolt', real, 'Jamaica', ['atleta', 'velocista', 'olímpico', 'recordista mundial', 'carismático', 'negro']).
 character('Barack Obama', real, 'Estados Unidos', ['político', 'presidente', 'advogado', 'prêmio Nobel', 'negro', 'orador']).
 character('Greta Thunberg', real, 'Suécia', ['ativista', 'clima', 'jovem', 'palestrante', 'autista', 'famosa']).
@@ -54,6 +54,7 @@ get_attributes(Characters, Attributes) :-
 has_attribute(Attr, character(_, _, _, Attrs)) :- 
     member(Attr, Attrs).
 
+/*
 % Conta quantas vezes um atributo aparece nos personagens
 count_occurrence(_, [], 0).
 count_occurrence(A, [character(_, _, _, Attrs)|T], Count) :-
@@ -72,7 +73,9 @@ most_frequent_attribute(Characters, AskedAttrs, Attr, Count) :-
     subtract(AllAttrs, AskedAttrs, UnaskedAttrs),
     count_attributes(UnaskedAttrs, Characters, Counted),
     sort(2, @>=, Counted, [Attr-Count|_]).  % maior frequência primeiro
+*/
 
+% Encontra o atributo mais discriminativo (que divide os personagens de forma mais equilibrada)
 best_discriminatory_attribute(Chars, Asked, BestAttr) :-
     get_attributes(Chars, AllAttrs),
     subtract(AllAttrs, Asked, Unasked),
@@ -95,7 +98,7 @@ attr_discrimination(Chars, Attr, Attr-Score) :-
 startGame :-
     write('Bem-vindo ao Jogo de Identificação de Personagens!'), nl,
     write('Pense em um personagem (real ou fictício) e eu tentarei adivinhar.'), nl,
-    write('Responda com "sim." ou "nao." (incluindo o ponto final) para minhas perguntas.'), nl, nl,
+    write('Responda com "sim." ou "nao." (incluindo o ponto final) para as características do seu personagem.'), nl, nl,
     prompt_continue,
     !.
 
@@ -196,19 +199,29 @@ process_type_answer(_, Type) :-
     write('Resposta inválida. Por favor, responda com "sim." ou "nao."'), nl,
     ask_type(Type).
 
-% Predicado para fazer perguntas ao usuário.
 ask_question(Attr, Answer) :-
-    write('Seu personagem '), write(Attr), write('? (sim./nao.) '),
+    % Casos específicos para atributos problemáticos
+    (   Attr = 'usa óculos'       -> Question = 'Seu personagem usa óculos?'
+    ;   Attr = 'super força'      -> Question = 'Seu personagem tem super força?'
+    ;   Attr = 'copa do mundo'    -> Question = 'Seu personagem tem copa do mundo?'
+    ;   Attr = 'prêmio Nobel'     -> Question = 'Seu personagem tem prêmio Nobel?'
+    ;   Attr = 'protagonista'     -> Question = 'Seu personagem é o protagonista?'
+    ;   Attr = 'fuma cachimbo'    -> Question = 'Seu personagem fuma cachimbo?'
+
+    % Regra padrão para os demais casos
+    ;   format(atom(Question), 'Seu personagem é ~w?', [Attr])
+    ),
+    write(Attr), write('? (sim./nao.) '),
     read(Answer).
 
 % Predicado para processar a resposta do usuário sobre um atributo.
 process_attribute_answer(sim, Attr, Chars, Asked, NewChars, NewAsked) :-
-    write('Ok, seu personagem '), write(Attr), write('.'), nl, nl,
+%    write('Ok, seu personagem '), write(Attr), write('.'), nl, nl,
     include(has_attribute(Attr), Chars, NewChars),
     NewAsked = [Attr|Asked].
 
 process_attribute_answer(nao, Attr, Chars, Asked, NewChars, NewAsked) :-
-    write('Ok, seu personagem não '), write(Attr), write('.'), nl, nl,
+%    write('Ok, seu personagem não '), write(Attr), write('.'), nl, nl,
     exclude(has_attribute(Attr), Chars, NewChars),
     NewAsked = [Attr|Asked].
 
