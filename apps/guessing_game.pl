@@ -16,6 +16,8 @@ Data:
 % - Origem: local de origem do personagem.
 % - [Atributos]: lista de características adicionais do personagem.
 
+:- dynamic character/4.
+
 % Personagens fictícios.
 character('Harry Potter', ficticio, 'Inglaterra', ['bruxo', 'usa óculos', 'protagonista', 'jovem', 'homem', 'europeu', 'estudante', 'personagem de livro', 'personagem de filme']).
 character('Peter Parker', ficticio, 'Estados Unidos', ['super herói', 'fotógrafo', 'jovem', 'homem', 'americano', 'nerd', 'tímido', 'protagonista', 'personagem de quadrinho']).
@@ -199,8 +201,8 @@ game(Attempts) :-
 
 % Caso base: sem tentativas restantes.
 game(0, _, _) :-
-    write('Você venceu! Não consegui adivinhar seu personagem.'), nl, !.
-%    learn_character.
+    write('Você venceu! Não consegui adivinhar seu personagem.'), nl,
+    learn_character, !.
 
 % Caso com apenas um personagem possível - adivinhamos.
 game(_, [character(Name, _, _, _)], _) :-
@@ -209,8 +211,8 @@ game(_, [character(Name, _, _, _)], _) :-
     (Answer = sim ->
         write('Acertei!'), nl
     ;
-        write('Você venceu! Não consegui adivinhar seu personagem.'), nl
-%        learn_character
+        write('Você venceu! Não consegui adivinhar seu personagem.'), nl,
+        learn_character
     ), !.
 
 % Caso geral: faz perguntas.
@@ -292,3 +294,27 @@ process_attribute_answer(_, _, Chars, Asked, NewChars, NewAsked) :-
 % ---------------------------------
 % APRENDIZADO DE NOVOS PERSONAGENS
 % ---------------------------------
+
+learn_character :-
+    write('Quero aprender sobre seu personagem.'), nl,
+    
+    % Nome
+    write('Qual é o nome do personagem? (entre aspas e com ponto final)'), nl,
+    read(Name),
+
+    % Tipo
+    write('Ele é fictício ou real? (ficticio. / real.)'), nl,
+    read(Type),
+
+    % Origem
+    write('De onde ele é? (entre aspas e com ponto final)'), nl,
+    read(Origin),
+
+    % Atributos
+    write('Liste os atributos do personagem como uma lista (entre colchetes). Ex: [bruxo, valente, jovem].'), nl,
+    read(Attrs),
+
+    % Adiciona dinamicamente à base de dados
+    assertz(character(Name, Type, Origin, Attrs)),
+
+    write('Personagem aprendido com sucesso! Obrigado.'), nl.
