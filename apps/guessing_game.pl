@@ -102,13 +102,13 @@ startGame :-
     consult('../data/characters.pl'),
     write('Bem-vindo ao Jogo de Identificação de Personagens!'), nl,
     write('Pense em um personagem (real ou fictício) e eu tentarei adivinhar.'), nl,
-    write('Responda com "sim." ou "nao." para as características do seu personagem.'), nl, nl,
+    write('Responda com "sim" ou "nao" para as características do seu personagem.'), nl, nl,
     prompt_continue,
     !.
 
 % Confirma se o usuário deseja continuar.
 prompt_continue :-
-    write('Deseja continuar? (sim./nao.) '),
+    write('Deseja continuar? (sim/nao) '),
     read_answer(Answer),
     handle_answer(Answer).
 
@@ -126,7 +126,7 @@ handle_answer(nao) :-
 % Caso a resposta seja inválida.
 handle_answer(_) :-
     nl,
-    write('Resposta inválida. Por favor, responda com "sim." ou "nao."'), nl, nl,
+    write('Resposta inválida. Por favor, responda com "sim" ou "nao"'), nl, nl,
     prompt_continue.
 
 % --------------------------
@@ -154,7 +154,7 @@ game(0, _, _) :-
 
 % Caso com apenas um personagem possível - adivinhamos.
 game(_, [character(Name, _, _, _)], _) :-
-    write('Seu personagem é '), write(Name), write('? (sim./nao.) '),
+    write('Seu personagem é '), write(Name), write('? (sim/nao) '),
     read_answer(Answer),
     (Answer = sim ->
         write('Acertei!'), nl
@@ -192,7 +192,7 @@ game(Attempts, RemainingChars, AskedAttrs) :-
 
 % Pergunta se o personagem é fictício ou real.
 ask_type(Type) :-
-    write('Seu personagem é fictício? (sim./nao.) '),
+    write('Seu personagem é fictício? (sim/nao) '),
     read_answer(Answer),
     process_type_answer(Answer, Type).
 
@@ -200,7 +200,7 @@ ask_type(Type) :-
 process_type_answer(sim, ficticio).
 process_type_answer(nao, real).
 process_type_answer(_, Type) :-
-    write('Resposta inválida. Por favor, responda com "sim." ou "nao."'), nl,
+    write('Resposta inválida. Por favor, responda com "sim" ou "nao"'), nl,
     ask_type(Type).
 
 ask_question(Attr, Answer) :-
@@ -222,7 +222,7 @@ ask_question(Attr, Answer) :-
     % Regra padrão para os demais casos.
     ;   format(atom(Question), 'Seu personagem é ~w?', [Attr])
     ),
-    write(Question), write('(sim./nao.) '),
+    write(Question), write('(sim/nao) '),
     read_answer(Answer).
 
 % Predicado para processar a resposta do usuário sobre um atributo.
@@ -235,7 +235,7 @@ process_attribute_answer(nao, Attr, Chars, Asked, NewChars, NewAsked) :-
     NewAsked = [Attr|Asked].
 
 process_attribute_answer(_, _, Chars, Asked, NewChars, NewAsked) :-
-    write('Resposta inválida. Por favor, responda com "sim." ou "nao."'), nl,
+    write('Resposta inválida. Por favor, responda com "sim" ou "nao"'), nl,
     NewChars = Chars,
     NewAsked = Asked.
 
@@ -247,19 +247,19 @@ learn_character :-
     write('Quero aprender sobre seu personagem.'), nl,
     
     % Nome
-    write('Qual é o nome do personagem? (entre aspas e com ponto final)'), nl,
+    write('Qual é o nome do personagem? '), nl,
     read_text_input(Name),
 
     % Tipo
-    write('Ele é fictício ou real? (ficticio. / real.)'), nl,
+    write('Ele é fictício ou real? (ficticio / real)'), nl,
     read_text_input(Type),
 
     % Origem
-    write('De onde ele é? (entre aspas e com ponto final)'), nl,
+    write('De onde ele é? '), nl,
     read_text_input(Origin),
 
     % Atributos
-    write('Liste os atributos do personagem como uma lista (entre colchetes). Ex: [bruxo, valente, jovem].'), nl,
+    write('Liste os atributos do personagem como uma lista. Ex: bruxo, valente, jovem'), nl,
     read_attributes_list(Attrs),
 
     % Adiciona dinamicamente e salva no arquivo, se ainda não existir
