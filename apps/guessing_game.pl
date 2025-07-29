@@ -4,22 +4,7 @@ Autor: Alexssander F. Cândido, Paulo L. Mendes
 Data:
 */
 
-% -----------------------------
-% BASE DE DADOS DE PERSONAGENS
-% -----------------------------
-
-% Base de dados de personagens.
-% Cada personagem é representado como character(Nome, Tipo, Origem, [Atributos])
-% Onde:
-% - Nome: nome do personagem.
-% - Tipo: 'ficticio' ou 'real'.
-% - Origem: local de origem do personagem.
-% - [Atributos]: lista de características adicionais do personagem.
-
-
-
-% Personagens fictícios.
-
+:- dynamic character/4.
 
 % -------------------------------
 % PREDICADOS AUXILIARES
@@ -51,6 +36,37 @@ attr_discrimination(Chars, Attr, Attr-Score) :-
     Score is min(Count, Without).  % Quanto mais balanceado, melhor
 
 % -----------------------------------
+% PREDICADOS DE LEITURA E PROCESSAMENTO DE ENTRADA
+% -----------------------------------
+
+% Lê uma resposta do usuário (sim/nao) sem exigir o ponto final
+read_answer(Answer) :-
+    read_line_to_string(current_input, String),
+    string_lower(String, LowerString), % Converte para minúsculas
+    (LowerString = "sim" -> Answer = sim ;
+     LowerString = "nao" -> Answer = nao ;
+     Answer = invalid). % Retorna 'invalid' para tratamento posterior
+
+% Lê uma entrada de texto geral (nome, origem) sem exigir aspas ou ponto final
+read_text_input(Atom) :-
+    read_line_to_string(current_input, String),
+    normalize_space(string(TrimmedString), String), % Remove espaços extras
+    atom_string(Atom, TrimmedString).
+
+% Lê uma lista de atributos, esperando que o usuário digite palavras separadas por vírgula ou espaço
+read_attributes_list(Attrs) :-
+    read_line_to_string(current_input, String),
+    % Divide a string por vírgulas e/ou espaços
+    split_string(String, ", ", " ", StringParts),
+    % Filtra partes vazias e converte para átomos
+    include(non_empty_string, StringParts, NonEmptyStrings),
+    maplist(atom_string, Attrs, NonEmptyStrings).
+
+non_empty_string(S) :-
+    string_length(S, L),
+    L > 0.
+
+% -----------------------------------
 % SISTEMA PRINCIPAL DE INICIALIZAÇÃO
 % -----------------------------------
 
@@ -66,7 +82,7 @@ startGame :-
 % Confirma se o usuário deseja continuar.
 prompt_continue :-
     write('Deseja continuar? (sim./nao.) '),
-    read(Answer),
+    read_answer(Answer),
     handle_answer(Answer).
 
 % Caso deseje jogar.
@@ -112,7 +128,7 @@ game(0, _, _) :-
 % Caso com apenas um personagem possível - adivinhamos.
 game(_, [character(Name, _, _, _)], _) :-
     write('Seu personagem é '), write(Name), write('? (sim./nao.) '),
-    read(Answer),
+    read_answer(Answer),
     (Answer = sim ->
         write('Acertei!'), nl
     ;
@@ -150,7 +166,7 @@ game(Attempts, RemainingChars, AskedAttrs) :-
 % Pergunta se o personagem é fictício ou real.
 ask_type(Type) :-
     write('Seu personagem é fictício? (sim./nao.) '),
-    read(Answer),
+    read_answer(Answer),
     process_type_answer(Answer, Type).
 
 % Interpreta a resposta sobre o tipo.
@@ -180,7 +196,7 @@ ask_question(Attr, Answer) :-
     ;   format(atom(Question), 'Seu personagem é ~w?', [Attr])
     ),
     write(Question), write('(sim./nao.) '),
-    read(Answer).
+    read_answer(Answer).
 
 % Predicado para processar a resposta do usuário sobre um atributo.
 process_attribute_answer(sim, Attr, Chars, Asked, NewChars, NewAsked) :-
@@ -205,19 +221,19 @@ learn_character :-
     
     % Nome
     write('Qual é o nome do personagem? (entre aspas e com ponto final)'), nl,
-    read(Name),
+    read_text_input(Name),
 
     % Tipo
     write('Ele é fictício ou real? (ficticio. / real.)'), nl,
-    read(Type),
+    read_text_input(Type),
 
     % Origem
     write('De onde ele é? (entre aspas e com ponto final)'), nl,
-    read(Origin),
+    read_text_input(Origin),
 
     % Atributos
     write('Liste os atributos do personagem como uma lista (entre colchetes). Ex: [bruxo, valente, jovem].'), nl,
-    read(Attrs),
+    read_attributes_list(Attrs),
 
     % Adiciona dinamicamente e salva no arquivo, se ainda não existir
     (character(Name, Type, Origin, Attrs) ->
@@ -229,10 +245,52 @@ learn_character :-
         write('Personagem aprendido com sucesso! Obrigado.'), nl
     ).
 
-append_character_to_file(Character) :- 
-    open('../data/characters.pl', append, Stream),
-    nl(Stream),
-    writeq(Stream, Character),
-    write(Stream, '.'),
-    close(Stream).
+% Predicado para adicionar aspas simples a um átomo e retornar como string.
+quote_atom_manually(Atom, QuotedString) :-
+    atom_string(Atom, AtomString),
+    format(string(QuotedString), '''~w''' , [AtomString]). % Adiciona aspas simples literais
 
+% Predicado para formatar uma lista de átomos em uma string literal de lista com aspas simples.
+format_list_as_quoted_string([], ''). % Lista vazia de atributos
+format_list_as_quoted_string([H|T], FormattedListString) :-
+    quote_atom_manually(H, HeadString),
+    format_rest_list_as_quoted_string(T, RestString),
+    (RestString = '' -> % Se é o último ou único elemento
+        FormattedListString = HeadString
+    ;
+        format(string(FormattedListString), '~w, ~w', [HeadString, RestString])
+    ).
+
+format_rest_list_as_quoted_string([], '').
+format_rest_list_as_quoted_string([H|T], FormattedListString) :-
+    quote_atom_manually(H, HeadString),
+    format_rest_list_as_quoted_string(T, RestString),
+    (RestString = '' ->
+        FormattedListString = HeadString
+    ;
+        format(string(FormattedListString), '~w, ~w', [HeadString, RestString])
+    ).
+
+
+% Predicado para anexar o personagem ao arquivo, forçando aspas simples onde necessário e removendo do tipo.
+append_character_to_file(character(Name, Type, Origin, Attrs)) :- 
+    open('../data/characters.pl', append, Stream),
+    
+    % Formata o Nome e Origem com aspas simples.
+    quote_atom_manually(Name, QuotedNameString),
+    quote_atom_manually(Origin, QuotedOriginString),
+
+    % O Tipo (Type) não deve ter aspas, então apenas converte para string.
+    atom_string(Type, TypeString), 
+
+    % Formata a lista de Atributos com aspas simples para cada um.
+    format_list_as_quoted_string(Attrs, QuotedAttrsListContentString),
+
+    % Constrói a linha completa como uma única string literal.
+    format(string(FullFactString), 
+           'character(~w, ~w, ~w, [~w]).', 
+           [QuotedNameString, TypeString, QuotedOriginString, QuotedAttrsListContentString]),
+
+    % Escreve a string literal no arquivo.
+    writeln(Stream, FullFactString), 
+    close(Stream).

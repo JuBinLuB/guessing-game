@@ -1,4 +1,10 @@
-:- dynamic character/4.
+% BASE DE DADOS DE PERSONAGENS
+% Cada personagem é representado como character(Nome, Tipo, Origem, [Atributos])
+% Onde:
+% - Nome: nome do personagem.
+% - Tipo: 'ficticio' ou 'real'.
+% - Origem: local de origem do personagem.
+% - [Atributos]: lista de características adicionais do personagem.
 
 character('Harry Potter', ficticio, 'Inglaterra', ['bruxo', 'usa óculos', 'protagonista', 'jovem', 'homem', 'europeu', 'estudante', 'personagem de livro', 'personagem de filme']).
 character('Peter Parker', ficticio, 'Estados Unidos', ['super herói', 'fotógrafo', 'jovem', 'homem', 'americano', 'nerd', 'tímido', 'protagonista', 'personagem de quadrinho']).
@@ -95,6 +101,3 @@ character('Neymar Jr.', real, 'Brasil', ['jogador de futebol', 'camisa 10', 'íd
 character('Donald Trump', real, 'Estados Unidos', ['político', 'empresário', 'polêmico', 'presidente', 'homem', 'americano', 'controverso']).
 character('Kanye West', real, 'Estados Unidos', ['cantor', 'polêmico', 'empresário', 'homem', 'negro', 'famoso', 'influente']).
 character('Aaron Fotheringham', real, 'Estados Unidos', ['atleta', 'cadeirante', 'homem', 'americano', 'pioneiro']).
-character('Ada Lovelace',real,'Inglaterra',[matemática,pioneira,programadora,mulher,visionária]).
-character('Nikola Tesla',real,'Sérvia',[inventor,eletricidade,visionário,engenheiro,excêntrico]).
-character('Sherlock Holmes',ficticio,'Inglaterra',[detetive,inteligente,observador]).
