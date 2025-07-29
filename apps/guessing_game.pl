@@ -4,6 +4,10 @@ Autor: Alexssander F. Cândido, Paulo L. Mendes
 Data:
 */
 
+:- use_module(library(apply)).
+:- use_module(library(random)).
+:- use_module(library(lists)).
+
 :- dynamic character/4.
 
 % -------------------------------
@@ -20,15 +24,37 @@ get_attributes(Characters, Attributes) :-
 has_attribute(Attr, character(_, _, _, Attrs)) :- 
     member(Attr, Attrs).
 
+% Verifica se a pontuação de um atributo corresponde a pontuação maxima
+is_top_score(MaxScore, Score-_Attr) :- 
+    Score = MaxScore.
+
 % Encontra o atributo mais discriminativo (que divide os personagens de forma mais equilibrada).
 best_discriminatory_attribute(Chars, Asked, BestAttr) :-
     get_attributes(Chars, AllAttrs),
     subtract(AllAttrs, Asked, Unasked),
-    maplist(attr_discrimination(Chars), Unasked, AttrScores),
-    keysort(AttrScores, Sorted),
-    last(Sorted, BestAttr-_).  % Pega o atributo com maior poder discriminatório
+    ( Unasked = [] ->
+        ( AllAttrs = [] -> BestAttr = no_attributes_left
+        ; BestAttr = no_attributes_left % Força o encerramento se todas as perguntas foram feitas
+        )
+    ; maplist(attr_discrimination(Chars), Unasked, AttrScores),
+      ( AttrScores = [] -> 
+          BestAttr = no_attributes_left
+      ;
+          maplist(arg(1), AttrScores, ScoresOnly), 
+          max_list(ScoresOnly, MaxScore), 
+          include(is_top_score(MaxScore), AttrScores, TopScores),
+          maplist(arg(2), TopScores, TopAttributes),
+          ( TopAttributes = [] -> 
+              BestAttr = no_attributes_left
+          ;
+              random_member(BestAttr, TopAttributes)
+          )
+      )
+    ).
+    %keysort(AttrScores, Sorted),
+    %last(Sorted, BestAttr-_).  % Pega o atributo com maior poder discriminatório
 
-attr_discrimination(Chars, Attr, Attr-Score) :-
+attr_discrimination(Chars, Attr, Score-Attr) :-
     include(has_attribute(Attr), Chars, With),
     length(Chars, Total),
     length(With, Count),
@@ -45,6 +71,7 @@ read_answer(Answer) :-
     string_lower(String, LowerString), % Converte para minúsculas
     (LowerString = "sim" -> Answer = sim ;
      LowerString = "nao" -> Answer = nao ;
+     LowerString = "não" -> Answer = nao ;
      Answer = invalid). % Retorna 'invalid' para tratamento posterior
 
 % Lê uma entrada de texto geral (nome, origem) sem exigir aspas ou ponto final
