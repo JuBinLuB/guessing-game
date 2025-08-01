@@ -1,7 +1,6 @@
 /*
 Jogo de identificação de personagens em Prolog.
 Autor: Alexssander F. Cândido, Paulo L. Mendes
-Data:
 */
 
 :- use_module(library(apply)).
@@ -28,64 +27,64 @@ has_attribute(Attr, character(_, _, _, Attrs)) :-
 is_top_score(MaxScore, Score-_Attr) :- 
     Score = MaxScore.
 
-% Encontra o atributo mais discriminativo (que divide os personagens de forma mais equilibrada).
-best_discriminatory_attribute(Chars, Asked, BestAttr) :-
+% Seleciona um atributo.
+select_attribute(Chars, Asked, ChosenAttr) :-
     get_attributes(Chars, AllAttrs),
     subtract(AllAttrs, Asked, Unasked),
     ( Unasked = [] ->
-        ( AllAttrs = [] -> BestAttr = no_attributes_left
-        ; BestAttr = no_attributes_left % Força o encerramento se todas as perguntas foram feitas
+        ( AllAttrs = [] -> ChosenAttr = no_attributes_left
+        ; ChosenAttr = no_attributes_left % Força o encerramento se todas as perguntas foram feitas.
         )
     ; maplist(attr_discrimination(Chars), Unasked, AttrScores),
       ( AttrScores = [] -> 
-          BestAttr = no_attributes_left
+          ChosenAttr = no_attributes_left
       ;
           maplist(arg(1), AttrScores, ScoresOnly), 
           max_list(ScoresOnly, MaxScore), 
           include(is_top_score(MaxScore), AttrScores, TopScores),
           maplist(arg(2), TopScores, TopAttributes),
           ( TopAttributes = [] -> 
-              BestAttr = no_attributes_left
+              ChosenAttr = no_attributes_left
           ;
-              random_member(BestAttr, TopAttributes)
+              random_member(ChosenAttr, TopAttributes)
           )
       )
     ).
-    %keysort(AttrScores, Sorted),
-    %last(Sorted, BestAttr-_).  % Pega o atributo com maior poder discriminatório
+%	keysort(AttrScores, Sorted),
+%	last(Sorted, ChosenAttr-_).  % Pega o atributo com maior poder discriminatório.
 
 attr_discrimination(Chars, Attr, Score-Attr) :-
     include(has_attribute(Attr), Chars, With),
     length(Chars, Total),
     length(With, Count),
     Without is Total - Count,
-    Score is min(Count, Without).  % Quanto mais balanceado, melhor
+    Score is min(Count, Without).  % Quanto mais balanceado, melhor.
 
 % -----------------------------------
 % PREDICADOS DE LEITURA E PROCESSAMENTO DE ENTRADA
 % -----------------------------------
 
-% Lê uma resposta do usuário (sim/nao) sem exigir o ponto final
+% Lê uma resposta do usuário (sim/nao) sem exigir o ponto final.
 read_answer(Answer) :-
     read_line_to_string(current_input, String),
-    string_lower(String, LowerString), % Converte para minúsculas
+    string_lower(String, LowerString), % Converte para minúsculas.
     (LowerString = "sim" -> Answer = sim ;
      LowerString = "nao" -> Answer = nao ;
      LowerString = "não" -> Answer = nao ;
-     Answer = invalid). % Retorna 'invalid' para tratamento posterior
+     Answer = invalid). % Retorna 'invalid' para tratamento posterior.
 
-% Lê uma entrada de texto geral (nome, origem) sem exigir aspas ou ponto final
+% Lê uma entrada de texto geral (nome, origem) sem exigir aspas ou ponto final.
 read_text_input(Atom) :-
     read_line_to_string(current_input, String),
-    normalize_space(string(TrimmedString), String), % Remove espaços extras
+    normalize_space(string(TrimmedString), String), % Remove espaços extras.
     atom_string(Atom, TrimmedString).
 
-% Lê uma lista de atributos, esperando que o usuário digite palavras separadas por vírgula ou espaço
+% Lê uma lista de atributos, esperando que o usuário digite palavras separadas por vírgula ou espaço.
 read_attributes_list(Attrs) :-
     read_line_to_string(current_input, String),
-    % Divide a string por vírgulas e/ou espaços
+    % Divide a string por vírgulas e/ou espaços.
     split_string(String, ", ", " ", StringParts),
-    % Filtra partes vazias e converte para átomos
+    % Filtra partes vazias e converte para átomos.
     include(non_empty_string, StringParts, NonEmptyStrings),
     maplist(atom_string, Attrs, NonEmptyStrings).
 
@@ -168,8 +167,8 @@ game(Attempts, RemainingChars, AskedAttrs) :-
     Attempts > 0,
     NewAttempts is Attempts - 1,
 
-%    most_frequent_attribute(RemainingChars, AskedAttrs, Attr, _),
-    best_discriminatory_attribute(RemainingChars, AskedAttrs, Attr),
+    % Seleciona o atributo para perguntar.
+    select_attribute(RemainingChars, AskedAttrs, Attr),
 
     % Faz a pergunta.
     ask_question(Attr, Answer),
@@ -246,23 +245,23 @@ process_attribute_answer(_, _, Chars, Asked, NewChars, NewAsked) :-
 learn_character :-
     write('Quero aprender sobre seu personagem.'), nl,
     
-    % Nome
+    % Nome.
     write('Qual é o nome do personagem? '), nl,
     read_text_input(Name),
 
-    % Tipo
+    % Tipo.
     write('Ele é fictício ou real? (ficticio / real)'), nl,
     read_text_input(Type),
 
-    % Origem
+    % Origem.
     write('De onde ele é? '), nl,
     read_text_input(Origin),
 
-    % Atributos
+    % Atributos.
     write('Liste os atributos do personagem como uma lista. Ex: bruxo, valente, jovem'), nl,
     read_attributes_list(Attrs),
 
-    % Adiciona dinamicamente e salva no arquivo, se ainda não existir
+    % Adiciona dinamicamente e salva no arquivo, se ainda não existir.
     (character(Name, Type, Origin, Attrs) ->
         write('Esse personagem já está cadastrado.'), nl
     ;
@@ -275,10 +274,10 @@ learn_character :-
 % Predicado para adicionar aspas simples a um átomo e retornar como string.
 quote_atom_manually(Atom, QuotedString) :-
     atom_string(Atom, AtomString),
-    format(string(QuotedString), '''~w''' , [AtomString]). % Adiciona aspas simples literais
+    format(string(QuotedString), '''~w''' , [AtomString]). % Adiciona aspas simples literais.
 
 % Predicado para formatar uma lista de átomos em uma string literal de lista com aspas simples.
-format_list_as_quoted_string([], ''). % Lista vazia de atributos
+format_list_as_quoted_string([], ''). % Lista vazia de atributos.
 format_list_as_quoted_string([H|T], FormattedListString) :-
     quote_atom_manually(H, HeadString),
     format_rest_list_as_quoted_string(T, RestString),

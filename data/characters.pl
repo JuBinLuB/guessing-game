@@ -1,3 +1,8 @@
+/*
+Jogo de identificação de personagens em Prolog.
+Autor: Alexssander F. Cândido, Paulo L. Mendes
+*/
+
 % BASE DE DADOS DE PERSONAGENS
 % Cada personagem é representado como character(Nome, Tipo, Origem, [Atributos])
 % Onde:
@@ -63,7 +68,7 @@ character('Isaac Newton', real, 'Inglaterra', ['cientista', 'físico', 'matemát
 character('Leonardo da Vinci', real, 'Itália', ['artista', 'pintor', 'inventor', 'renascentista', 'europeu', 'homem', 'gênio', 'conhecido mundialmente', 'multitalentoso', 'histórico']).
 character('Frida Kahlo', real, 'México', ['artista', 'pintor', 'expressivo', 'latino-americano', 'famoso', 'mulher', 'influente', 'sofrido', 'conhecido mundialmente']).
 character('Malala Yousafzai', real, 'Paquistão', ['ativista', 'educador', 'jovem', 'prêmio Nobel', 'mulher', 'asiático', 'corajoso', 'palestrante', 'defensor dos direitos humanos']).
-character('Pelé', real, 'Brasil', ['atleta', 'conhecido mundialmente', 'jogador de futebol', 'copa do mundo', 'negro', 'famoso', 'homem', 'ídolo nacional', 'brasileiro', 'histórico']).
+character('Pelé', real, 'Brasil', ['atleta', 'campeão', 'conhecido mundialmente', 'jogador de futebol', 'copa do mundo', 'negro', 'famoso', 'homem', 'ídolo', 'brasileiro', 'histórico']).
 character('Usain Bolt', real, 'Jamaica', ['atleta', 'velocista', 'olímpico', 'recordista mundial', 'carismático', 'negro', 'homem', 'jamaicano', 'famoso']).
 character('Barack Obama', real, 'Estados Unidos', ['político', 'presidente', 'advogado', 'prêmio Nobel', 'negro', 'americano', 'líder', 'homem', 'influente']).
 character('Greta Thunberg', real, 'Suécia', ['ativista', 'clima', 'jovem', 'mulher', 'palestrante', 'europeu', 'famoso', 'autista', 'influente']).
@@ -75,13 +80,13 @@ character('Vinicius Junior', real, 'Brasil', ['jogador de futebol', 'atleta', 'j
 character('Elon Musk', real, 'África do Sul', ['empresário', 'inventor', 'rico', 'visionário', 'homem', 'africano', 'americano', 'líder', 'famoso']).
 character('Ada Lovelace', real, 'Inglaterra', ['matemático', 'programador', 'pioneiro', 'cientista', 'mulher', 'europeu', 'visionário', 'histórico', 'influente']).
 character('Gal Gadot', real, 'Israel', ['atriz', 'modelo', 'famoso', 'israelense', 'mulher', 'carismático', 'belo', 'estrela de cinema']).
-character('Lionel Messi', real, 'Argentina', ['jogador de futebol', 'camisa 10', 'ídolo nacional', 'campeão', 'atleta', 'copa do mundo', 'argentino', 'conhecido mundialmente', 'homem', 'pequeno', 'canhoto', 'famoso']).
+character('Lionel Messi', real, 'Argentina', ['jogador de futebol', 'camisa 10', 'ídolo', 'campeão', 'atleta', 'copa do mundo', 'argentino', 'conhecido mundialmente', 'homem', 'pequeno', 'canhoto', 'famoso']).
 character('Taylor Swift', real, 'Estados Unidos', ['cantor', 'compositor', 'famoso', 'mulher', 'americano', 'popstar', 'loiro', 'influente', 'premiado']).
 character('Martin Luther King Jr.', real, 'Estados Unidos', ['líder', 'ativista', 'negro', 'pastor', 'palestrante', 'homem', 'americano', 'histórico', 'prêmio Nobel']).
 character('Serena Williams', real, 'Estados Unidos', ['atleta', 'tenista', 'campeão', 'mulher', 'negra', 'americano', 'famoso', 'determinado', 'histórico']).
-character('Stephen Curry', real, 'Estados Unidos', ['jogador de basquete', 'atleta', 'armador', 'americano', 'homem', 'campeão', 'líder', 'famoso', 'habilidoso']).
+character('Stephen Curry', real, 'Estados Unidos', ['jogador de basquete', 'ídolo', 'atleta', 'armador', 'americano', 'homem', 'campeão', 'líder', 'famoso', 'habilidoso']).
 character('Pablo Picasso', real, 'Espanha', ['artista', 'pintor', 'europeu', 'homem', 'inovador', 'histórico', 'revolucionário', 'renomado', 'famoso']).
-character('Ayrton Senna', real, 'Brasil', ['piloto', 'brasileiro', 'campeão', 'atleta', 'ídolo nacional', 'famoso', 'homem', 'carismático', 'histórico']).
+character('Ayrton Senna', real, 'Brasil', ['piloto', 'brasileiro', 'campeão', 'atleta', 'ídolo', 'famoso', 'homem', 'carismático', 'histórico']).
 character('Rihanna', real, 'Barbados', ['cantor', 'empresário', 'mulher', 'negra', 'caribenho', 'famoso', 'estiloso', 'popstar', 'influente', 'conhecido mundialmente']).
 character('Chico Xavier', real, 'Brasil', ['médium', 'religioso', 'espiritualista', 'escritor', 'brasileiro', 'homem', 'influente', 'histórico', 'palestrante']).
 character('Amelia Earhart', real, 'Estados Unidos', ['piloto', 'explorador', 'mulher', 'americano', 'histórico', 'corajoso', 'pioneiro', 'desaparecido', 'famoso']).
@@ -91,11 +96,11 @@ character('Charles Darwin', real, 'Inglaterra', ['cientista', 'biólogo', 'natur
 character('Madonna', real, 'Estados Unidos', ['cantor', 'dançarino', 'atriz', 'famoso', 'americano', 'popstar', 'mulher', 'controverso', 'ícone pop']).
 character('Clarice Lispector', real, 'Brasil', ['escritor', 'filósofo', 'latino-americano', 'mulher', 'influente', 'introspectivo', 'renomado', 'histórico', 'poético']).
 character('Michael Jackson', real, 'Estados Unidos', ['cantor', 'dançarino', 'ícone pop', 'americano', 'famoso', 'homem', 'histórico', 'conhecido mundialmente']).
-character('Cristiano Ronaldo', real, 'Portugal', ['jogador de futebol', 'europeu', 'portugues', 'campeão', 'ídolo nacional', 'famoso', 'homem', 'atleta', 'histórico', 'conhecido mundialmente']).
-character('Marta Vieira da Silva', real, 'Brasil', ['jogador de futebol', 'brasileiro', 'mulher', 'ídolo nacional', 'histórico', 'campeão', 'atleta', 'famoso', 'conhecido mundialmente']).
-character('LeBron James', real, 'Estados Unidos', ['jogador de basquete', 'negro', 'campeão', 'homem', 'americano', 'famoso', 'histórico', 'atleta', 'líder']).
+character('Cristiano Ronaldo', real, 'Portugal', ['jogador de futebol', 'europeu', 'portugues', 'campeão', 'ídolo', 'famoso', 'homem', 'atleta', 'histórico', 'conhecido mundialmente']).
+character('Marta Vieira da Silva', real, 'Brasil', ['jogador de futebol', 'brasileiro', 'mulher', 'ídolo', 'histórico', 'campeão', 'atleta', 'famoso', 'conhecido mundialmente']).
+character('LeBron James', real, 'Estados Unidos', ['jogador de basquete', 'negro', 'campeão', 'homem', 'americano', 'famoso', 'histórico', 'atleta', 'líder', 'ídolo']).
 character('Guga Kuerten', real, 'Brasil', ['tenista', 'campeão', 'brasileiro', 'carismático', 'histórico', 'homem', 'atleta', 'famoso']).
-character('Zinedine Zidane', real, 'França', ['jogador de futebol', 'camisa 10', 'francês', 'europeu', 'técnico', 'campeão', 'homem', 'histórico', 'famoso', 'atleta']).
+character('Zinedine Zidane', real, 'França', ['jogador de futebol', 'camisa 10', 'francês', 'europeu', 'técnico', 'campeão', 'homem', 'histórico', 'famoso', 'atleta', 'ídolo']).
 character('Ronaldinho Gaúcho', real, 'Brasil', ['jogador de futebol', 'habilidoso', 'camisa 10', 'alegre', 'ídolo', 'brasileiro', 'conhecido mundialmente', 'famoso', 'homem', 'campeão', 'atleta']).
 character('Neymar Jr.', real, 'Brasil', ['jogador de futebol', 'camisa 10', 'ídolo', 'polêmico', 'atacante', 'famoso', 'homem', 'atleta', 'conhecido mundialmente']).
 character('Donald Trump', real, 'Estados Unidos', ['político', 'empresário', 'polêmico', 'presidente', 'homem', 'americano', 'controverso']).
